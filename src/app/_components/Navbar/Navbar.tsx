@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiSearch,
   FiHeart,
@@ -18,12 +18,15 @@ import {
   FiHeadphones,
 } from "react-icons/fi";
 import logo from "../../../assets/Images/fresh-logo.svg";
-import  Image  from "next/image";
+import Image from "next/image";
+import { getAllCategories } from "@/service/API/getAllCategories";
+import { Category } from "@/interfaces/Products.interface";
+import { CatInterface } from "@/interfaces/Category.interface";
 // ─── Inline SVG Logo (cart icon) ───────────────────────────────────────────
 function CartLogo() {
   return (
     <>
-      <Image src={logo} alt="logo "/>
+      <Image src={logo} alt="logo " />
     </>
   );
 }
@@ -59,18 +62,18 @@ function TopBar() {
             <FiMail /> support@freshcart.com
           </a>
           <span className="hidden md:block w-px h-3 bg-gray-600" />
-          <a
-            href="/signin"
+          <Link
+            href="/login"
             className="flex items-center gap-1 hover:text-white transition-colors"
           >
             <FiUser size={12} /> Sign In
-          </a>
-          <a
-            href="/signup"
+          </Link>
+          <Link
+            href="/register"
             className="flex items-center gap-1 hover:text-white transition-colors"
           >
             <FiUserPlus size={12} /> Sign Up
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -82,6 +85,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [categories, setCategories] = useState([]);
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -91,6 +95,7 @@ export default function Navbar() {
       href: "/categories",
       hasDropdown: true,
       dropdown: [
+        "All Categories",
         "Electronics",
         "Fashion",
         "Grocery",
@@ -100,6 +105,15 @@ export default function Navbar() {
     },
     { label: "Brands", href: "/brands" },
   ];
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const data = await getAllCategories();
+      console.log(data);
+      setCategories(data);
+    }
+    fetchCategories();
+  }, []);
 
   return (
     <>
@@ -113,7 +127,6 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <CartLogo />
-              
             </Link>
 
             {/* Search bar — hidden on mobile */}
@@ -149,26 +162,46 @@ export default function Navbar() {
                     </button>
                     {categoriesOpen && (
                       <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
-                        {link.dropdown.map((item) => (
-                          <a
+                        {/* {link.dropdown.map((item) => (
+                          <Link
                             key={item}
-                            href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                            href={`/products/${item.toLowerCase().replace(/\s+/g, "-")}`}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
                           >
                             {item}
-                          </a>
+                          </Link>
+                        ))} */}
+                        {/* All Categories */}
+                        <Link
+                          href="/categories"
+                          onClick={() => setCategoriesOpen(false)}
+                          className="block px-4 py-2 text-sm font-medium text-gray-800 hover:bg-green-50 hover:text-green-600 transition-colors border-b border-gray-100 mb-1"
+                        >
+                          All Categories
+                        </Link>
+
+                        {/* Dynamic from API */}
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat._id}
+                            href={`/categories/${cat._id}`}
+                            onClick={() => setCategoriesOpen(false)}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                          >
+                            {cat.name}
+                          </Link>
                         ))}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <a
+                  <Link
                     key={link.label}
                     href={link.href}
                     className="hover:text-green-600 transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 ),
               )}
             </nav>
@@ -189,15 +222,15 @@ export default function Navbar() {
               </div>
 
               {/* Wishlist */}
-              <a
+              <Link
                 href="/wishlist"
                 className="hidden sm:flex p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
               >
                 <FiHeart size={20} />
-              </a>
+              </Link>
 
               {/* Cart */}
-              <a
+              <Link
                 href="/cart"
                 className="hidden sm:flex p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors relative"
               >
@@ -205,16 +238,16 @@ export default function Navbar() {
                 <span className="absolute -top-0.5 -right-0.5 bg-green-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   3
                 </span>
-              </a>
+              </Link>
 
               {/* Sign In button — hidden on mobile */}
-              <a
+              <Link
                 href="/login"
                 className="hidden md:flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
               >
                 <FiUser size={14} />
                 Sign In
-              </a>
+              </Link>
 
               {/* Hamburger — mobile only */}
               <button
@@ -252,7 +285,6 @@ export default function Navbar() {
             onClick={() => setMobileOpen(false)}
           >
             <CartLogo />
-           
           </Link>
           <button
             onClick={() => setMobileOpen(false)}

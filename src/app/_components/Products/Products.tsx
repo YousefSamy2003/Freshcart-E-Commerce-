@@ -7,8 +7,8 @@ export default async function Products() {
   console.log(data);
   return (
     <div className="container mx-auto my-5">
-      <h2 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
-        <span className="w-1 h-7 bg-green-600 rounded-full inline-block"></span>
+      <h2 className="flex items-center gap-2 text-3xl font-bold text-gray-800 mb-5">
+        <span className="w-1 h-7 bg-green-600 rounded-full inline-block "></span>
         Featured <span className="text-green-600">Products</span>
       </h2>
 
