@@ -4,6 +4,9 @@ export async function getSpecificProduct(id: string) {
   try {
     const data = await fetch(
       `https://ecommerce.routemisr.com/api/v1/products/${id}`,
+      {
+        cache: "force-cache",
+      },
     );
     if (data?.ok) {
       const response = await data.json();
@@ -15,4 +18,3 @@ export async function getSpecificProduct(id: string) {
     throw new Error("something went wrong");
   }
 }
-
