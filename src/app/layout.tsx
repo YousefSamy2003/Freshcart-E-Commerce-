@@ -3,6 +3,7 @@ import { Exo, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "./_components/Navbar/Navbar";
+import Footer from "./_components/Footer/Footer";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -24,12 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${exo.className}  antialiased`}>
+        {/* navbar  */}
+        <Navbar />
 
-
-       {/* navbar  */}
-         <Navbar />
-     
         {children}
+
+        {/* Footer  */}
+        <Footer />
       </body>
     </html>
   );

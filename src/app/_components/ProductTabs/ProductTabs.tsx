@@ -243,9 +243,9 @@ export default function ProductTabs({ product }) {
   ];
 
   return (
-    <div className="container mx-auto p-6  bg-white rounded-2xl border border-gray-100 shadow-sm my-5 ">
+    <div className="container mx-auto p-6  bg-white rounded-2xl border border-gray-100 shadow-sm my-5  ">
       {/* Tab headers */}
-      <div className="flex border-b border-gray-100 ">
+      <div className="flex border-b border-gray-100 overflow-hidden ">
         {tabs.map((tab) => (
           <button
             key={tab.id}
