@@ -2,6 +2,7 @@ import { FiHeart, FiRefreshCw, FiEye, FiPlus } from "react-icons/fi";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { ProductInterface } from "@/interfaces/Products.interface";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ProductCard({
   product,
@@ -21,9 +22,9 @@ export default function ProductCard({
         <button className="p-2 bg-white rounded-full shadow-sm hover:text-green-600 transition-colors">
           <FiRefreshCw size={16} />
         </button>
-        <button className="p-2 bg-white rounded-full shadow-sm hover:text-green-600 transition-colors">
+        <Link href={`/productdetails/${product?._id}`} className="p-2 bg-white rounded-full shadow-sm hover:text-green-600 transition-colors">
           <FiEye size={16} />
-        </button>
+        </Link>
       </div>
 
       {/* Product Image */}
