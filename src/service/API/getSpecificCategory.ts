@@ -4,6 +4,9 @@ async function getSpecificCategory(id: string):Promise<ProductInterface []>  {
   try {
     const data = await fetch(
       `https://ecommerce.routemisr.com/api/v1/products?category=${id}`,
+      {
+        cache: "force-cache",
+      },
     );
     if (data.ok) {
       const response = await data.json();

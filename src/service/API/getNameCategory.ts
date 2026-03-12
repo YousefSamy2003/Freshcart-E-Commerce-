@@ -5,6 +5,9 @@ async function getNameCategory(id: string):Promise<NameCategoryInterface>  {
   try {
     const data = await fetch(
       `https://ecommerce.routemisr.com/api/v1/categories/${id}`,
+      {
+        cache: "force-cache",
+      },
     );
     if (data.ok) {
       const response = await data.json();

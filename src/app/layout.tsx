@@ -22,17 +22,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className={`${exo.className}  antialiased`}>
-        {/* navbar  */}
-        <Navbar />
+ return (
+  <html lang="en" className={cn("font-sans", geist.variable)}>
+    <body className={`${exo.className} antialiased flex flex-col min-h-screen`}  suppressHydrationWarning >
+      
+      {/* Navbar */}
+      <Navbar />
 
+      {/* Content */}
+      <main className="flex-1">
         {children}
+      </main>
 
-        {/* Footer  */}
-        <Footer />
-      </body>
-    </html>
-  );
+      {/* Footer */}
+      <Footer />
+
+    </body>
+  </html>
+);
 }
