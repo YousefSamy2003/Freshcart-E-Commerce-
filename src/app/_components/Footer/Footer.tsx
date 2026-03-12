@@ -166,7 +166,7 @@ export default function Footer() {
             {/* Link columns */}
             {Object.entries(links).map(([title, items]) => (
               <div key={title}>
-                <h4 className="text-white font-semibold text-sm mb-4">
+                <h4 className="text-white font-semibold text-sm mb-4 ">
                   {title}
                 </h4>
                 <ul className="flex flex-col gap-2.5">
