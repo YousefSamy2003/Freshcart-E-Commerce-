@@ -1,7 +1,8 @@
 import React from 'react'
+import RegisterPage from './SignUp'
 
 export default function page() {
   return (
-    <div>page</div>
+    <RegisterPage/>
   )
 }
