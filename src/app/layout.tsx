@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "./_components/Navbar/Navbar";
 import Footer from "./_components/Footer/Footer";
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,7 +27,7 @@ export default function RootLayout({
  return (
   <html lang="en" className={cn("font-sans", geist.variable)}>
     <body className={`${exo.className} antialiased flex flex-col min-h-screen`}  suppressHydrationWarning >
-      
+      <ToastContainer position="top-right" autoClose={3000} />
       {/* Navbar */}
       <Navbar />
 

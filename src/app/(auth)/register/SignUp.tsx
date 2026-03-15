@@ -14,6 +14,15 @@ import {
 import { FaStar, FaTruck, FaShieldAlt, FaMedal } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { SiFacebook } from "react-icons/si";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Resolver } from "dns";
+import { RegisterFormData, registerSchema } from "./register.schema";
+import { RegisterFun } from "@/service/API/Register.API";
+import { any } from "zod";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const perks = [
   {
@@ -37,6 +46,45 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const {
+    handleSubmit,
+    register,
+    control,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      phone: "",
+      agree: false,
+    },
+  });
+
+  const router = useRouter();
+  async function mySubmit(data: RegisterFormData) {
+    try {
+      const res = await RegisterFun(data);
+      toast.success("Account created successfully! 🎉");
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    } catch (err: any) {
+      toast.error("Something went wrong");
+    }
+  }
+  /*
+
+{
+    "name": "Ahmed Abd Al-Muti",
+    "email":"ahmedmuttii4012@gmail.com",
+    "password":"Ahmed@123",
+    "rePassword":"Ahmed@123",
+    "phone":"01010700701"
+}
+  */
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -86,16 +134,16 @@ export default function RegisterPage() {
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-500 italic leading-relaxed">
+            <p className=" text-[13px] font-medium text-gray-600 italic leading-relaxed">
               "FreshCart has transformed my shopping experience. The quality of
               the products is outstanding, and the delivery is always on time.
-              Highly recommend!"
+              Highly recommend !"
             </p>
           </div>
         </div>
 
         {/* ── Right Panel: Form ── */}
-        <form action="">
+        <form action="" onSubmit={handleSubmit(mySubmit)}>
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <div className="text-center mb-6">
               <h2 className="text-xl font-bold text-gray-900">
@@ -133,57 +181,119 @@ export default function RegisterPage() {
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={15}
                   />
-                  <input
-                    placeholder="Ali"
-                    className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition"
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <div>
+                        <div className="relative">
+                          <FiUser
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                            size={15}
+                          />
+                          <input
+                            {...field}
+                            placeholder="Ali"
+                            className={`w-full border rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 transition ${
+                              fieldState.invalid
+                                ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                                : "border-gray-200 focus:border-green-500 focus:ring-green-500"
+                            }`}
+                          />
+                        </div>
+                        {fieldState.invalid && (
+                          <p className="text-xs text-red-500 mt-1">
+                            {fieldState.error?.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
                   />
                 </div>
               </div>
 
               {/* Email */}
               <div>
-                <label className="text-xs font-semibold text-gray-700 mb-1 block">
-                  Email *
-                </label>
-                <div className="relative">
-                  <FiMail
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    size={15}
-                  />
-                  <input
-                    type="email"
-                    placeholder="ali@example.com"
-                    className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition"
-                  />
-                </div>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700 mb-1 block">
+                        Email *
+                      </label>
+                      <div className="relative">
+                        <FiMail
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                          size={15}
+                        />
+                        <input
+                          {...field}
+                          type="email"
+                          placeholder="ali@example.com"
+                          className={`w-full border rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 transition ${
+                            fieldState.invalid
+                              ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                              : "border-gray-200 focus:border-green-500 focus:ring-green-500"
+                          }`}
+                        />
+                      </div>
+                      {fieldState.invalid && (
+                        <p className="text-xs text-red-500 mt-1">
+                          {fieldState.error?.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
 
               {/* Password */}
               <div>
-                <label className="text-xs font-semibold text-gray-700 mb-1 block">
-                  Password *
-                </label>
                 <div className="relative">
-                  <FiLock
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    size={15}
-                  />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="create a strong password"
-                    className="w-full border border-gray-200 rounded-xl pl-9 pr-10 py-2.5 text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? (
-                      <FiEyeOff size={15} />
-                    ) : (
-                      <FiEye size={15} />
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <div>
+                        <label className="text-xs font-semibold text-gray-700 mb-1 block">
+                          Password *
+                        </label>
+                        <div className="relative">
+                          <FiLock
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                            size={15}
+                          />
+                          <input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="create a strong password"
+                            className={`w-full border rounded-xl pl-9 pr-10 py-2.5 text-sm focus:outline-none focus:ring-1 transition ${
+                              fieldState.invalid
+                                ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                                : "border-gray-200 focus:border-green-500 focus:ring-green-500"
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showPassword ? (
+                              <FiEyeOff size={15} />
+                            ) : (
+                              <FiEye size={15} />
+                            )}
+                          </button>
+                        </div>
+                        {fieldState.invalid && (
+                          <p className="text-xs text-red-500 mt-1">
+                            {fieldState.error?.message}
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </button>
+                  />
                 </div>
                 <p className="text-xs text-gray-400 mt-1">
                   Must be at least 8 characters with numbers and symbols
@@ -192,50 +302,96 @@ export default function RegisterPage() {
 
               {/* Confirm Password */}
               <div>
-                <label className="text-xs font-semibold text-gray-700 mb-1 block">
-                  Confirm Password *
-                </label>
-                <div className="relative">
-                  <FiLock
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    size={15}
-                  />
-                  <input
-                    type={showConfirm ? "text" : "password"}
-                    placeholder="confirm your password"
-                    className="w-full border border-gray-200 rounded-xl pl-9 pr-10 py-2.5 text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showConfirm ? <FiEyeOff size={15} /> : <FiEye size={15} />}
-                  </button>
-                </div>
+                <Controller
+                  name="rePassword"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700 mb-1 block">
+                        Confirm Password *
+                      </label>
+                      <div className="relative">
+                        <FiLock
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                          size={15}
+                        />
+                        <input
+                          {...field}
+                          type={showConfirm ? "text" : "password"}
+                          placeholder="confirm your password"
+                          className={`w-full border rounded-xl pl-9 pr-10 py-2.5 text-sm focus:outline-none focus:ring-1 transition ${
+                            fieldState.invalid
+                              ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                              : "border-gray-200 focus:border-green-500 focus:ring-green-500"
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirm(!showConfirm)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          {showConfirm ? (
+                            <FiEyeOff size={15} />
+                          ) : (
+                            <FiEye size={15} />
+                          )}
+                        </button>
+                      </div>
+                      {fieldState.invalid && (
+                        <p className="text-xs text-red-500 mt-1">
+                          {fieldState.error?.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="text-xs font-semibold text-gray-700 mb-1 block">
-                  Phone Number *
-                </label>
-                <div className="relative">
-                  <FiPhone
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    size={15}
-                  />
-                  <input
-                    type="tel"
-                    placeholder="+1 234 567 8900"
-                    className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition"
-                  />
-                </div>
+                <Controller
+                  name="phone"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700 mb-1 block">
+                        Phone Number *
+                      </label>
+                      <div className="relative">
+                        <FiPhone
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                          size={15}
+                        />
+                        <input
+                          {...field}
+                          type="tel"
+                          placeholder="+1 234 567 8900"
+                          className={`w-full border rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 transition ${
+                            fieldState.invalid
+                              ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                              : "border-gray-200 focus:border-green-500 focus:ring-green-500"
+                          }`}
+                        />
+                      </div>
+                      {fieldState.invalid && (
+                        <p className="text-xs text-red-500 mt-1">
+                          {fieldState.error?.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
 
               {/* Terms */}
               <label className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" className="mt-0.5 accent-green-600" />
+                <input
+                  type="checkbox"
+                  {...register("agree", {
+                    required: "You must agree to the terms",
+                  })}
+                  className="mt-0.5 accent-green-600"
+                />
                 <span className="text-xs text-gray-500">
                   I agree to the{" "}
                   <Link
@@ -254,6 +410,11 @@ export default function RegisterPage() {
                   *
                 </span>
               </label>
+              {errors?.agree && errors.agree && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors?.agree?.message}
+                </p>
+              )}
 
               {/* Submit */}
               <button className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors">
