@@ -23,6 +23,7 @@ import { any } from "zod";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 const perks = [
   {
@@ -45,11 +46,13 @@ const perks = [
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const {
     handleSubmit,
     register,
     control,
+    reset,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -65,14 +68,18 @@ export default function RegisterPage() {
 
   const router = useRouter();
   async function mySubmit(data: RegisterFormData) {
+    setLoading(true);
     try {
       const res = await RegisterFun(data);
       toast.success("Account created successfully! 🎉");
       setTimeout(() => {
         router.push("/login");
       }, 2000);
+      reset();
     } catch (err: any) {
       toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   }
   /*
@@ -418,7 +425,8 @@ export default function RegisterPage() {
 
               {/* Submit */}
               <button className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors">
-                <FiUserPlus size={16} /> Create My Account
+                <FiUserPlus size={16} />
+                {isLoading ? <Spinner /> : "Create My Account"}
               </button>
 
               <p className="text-center text-sm text-gray-400">
